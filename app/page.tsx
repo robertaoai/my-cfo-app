@@ -4,6 +4,8 @@ import { WarningPanel } from "./components/WarningPanel";
 import { SleevesTable } from "./components/SleevesTable";
 import { RecentActivity } from "./components/RecentActivity";
 import { SimulateWithdrawalButton } from "./components/SimulateWithdrawalDialog";
+import { PrincipalChart, CumulativeCashChart } from "./components/HistoryCharts";
+import type { PrincipalSnapshot, Distribution } from "@/lib/types";
 import { Landmark } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +28,18 @@ export default async function Home() {
     .select("id, ex_date, gross, withholding, net, sleeve_id, sleeves(name)")
     .order("ex_date", { ascending: false })
     .limit(8);
+
+  // Get all principal snapshots for the chart
+  const { data: allSnapshots } = await supabase
+    .from("principal_snapshots")
+    .select("*")
+    .order("as_of", { ascending: true });
+
+  // Get all distributions for the cumulative chart
+  const { data: allDists } = await supabase
+    .from("distributions")
+    .select("*")
+    .order("ex_date", { ascending: true });
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -63,6 +77,23 @@ export default async function Home() {
           </h2>
         </div>
         <SleevesTable />
+      </section>
+
+      {/* History Charts */}
+      <section className="mb-6">
+        <h2 className="text-sm font-medium text-neutral-300 uppercase tracking-wider mb-3">
+          History
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <h3 className="text-xs font-medium text-neutral-400 mb-3">Principal Balance Over Time</h3>
+            <PrincipalChart snapshots={(allSnapshots ?? []) as PrincipalSnapshot[]} />
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <h3 className="text-xs font-medium text-neutral-400 mb-3">Cumulative Cash Extracted</h3>
+            <CumulativeCashChart distributions={(allDists ?? []) as Distribution[]} />
+          </div>
+        </div>
       </section>
 
       {/* Two-column: Recent Distributions + Audit Log */}

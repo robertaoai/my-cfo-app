@@ -3,6 +3,7 @@ import type { Sleeve } from "@/lib/types";
 import { LogDistributionButton } from "./LogDistributionDialog";
 import { UpdatePriceButton } from "./UpdatePriceDialog";
 import { SleeveActions } from "./SleeveDialog";
+import { FlagSleeveButton, ReplacementButton } from "./ReplacementFlow";
 import { CircleDot } from "lucide-react";
 
 const statusColors: Record<string, string> = {
@@ -143,8 +144,10 @@ export async function SleevesTable() {
                             sleeveName={s.name}
                             currentPrice={s.current_price}
                           />
+                          <FlagSleeveButton sleeve={s} />
                         </>
                       )}
+                      <ReplacementButton sleeve={s} />
                       <SleeveActions mode="edit" sleeve={s} />
                     </div>
                   </td>
