@@ -27,6 +27,10 @@ export async function createSleeve(formData: FormData) {
 
   const supabase = await createClient();
 
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
   const { data: sleeve, error } = await supabase
     .from("sleeves")
     .insert({
@@ -77,6 +81,10 @@ export async function updateSleeve(formData: FormData) {
 
   const supabase = await createClient();
 
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
   const { error } = await supabase
     .from("sleeves")
     .update({
@@ -117,6 +125,10 @@ export async function updateSleevePrice(formData: FormData) {
 
   const supabase = await createClient();
 
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
   // Fetch old price for audit
   const { data: sleeve } = await supabase
     .from("sleeves")
@@ -155,6 +167,10 @@ export async function deleteSleeve(formData: FormData) {
   if (!id) return { error: "Sleeve ID is required." };
 
   const supabase = await createClient();
+
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
 
   // Check for existing distributions
   const { count } = await supabase

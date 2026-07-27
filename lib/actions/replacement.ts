@@ -18,6 +18,10 @@ export async function flagSleeve(formData: FormData) {
 
   const supabase = await createClient();
 
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
   const { data: sleeve } = await supabase
     .from("sleeves")
     .select("name, status")
@@ -65,6 +69,10 @@ export async function executeReplacement(formData: FormData) {
   }
 
   const supabase = await createClient();
+
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
 
   // Verify old sleeve is flagged
   const { data: oldSleeve } = await supabase

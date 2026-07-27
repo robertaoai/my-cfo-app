@@ -26,6 +26,10 @@ export async function logDistribution(formData: FormData) {
 
   const supabase = await createClient();
 
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
   // 1. Insert distribution
   const { data: dist, error: distErr } = await supabase
     .from("distributions")

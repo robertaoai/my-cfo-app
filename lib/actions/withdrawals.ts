@@ -25,6 +25,10 @@ export async function simulateWithdrawal(formData: FormData) {
 
   const supabase = await createClient();
 
+  // Auth guard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
   // 1. Latest principal
   const { data: latestSnap } = await supabase
     .from("principal_snapshots")

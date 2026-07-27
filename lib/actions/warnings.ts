@@ -17,6 +17,10 @@ import {
 export async function checkWarnings() {
   const supabase = await createClient();
 
+  // Auth guard — warnings are scoped to the current user
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
   // ── Threshold 1: Projected monthly income < 90% of target ──
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)

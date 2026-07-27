@@ -5,6 +5,7 @@ import { SleevesTable } from "./components/SleevesTable";
 import { RecentActivity } from "./components/RecentActivity";
 import { SimulateWithdrawalButton } from "./components/SimulateWithdrawalDialog";
 import { PrincipalChart, CumulativeCashChart } from "./components/HistoryCharts";
+import { UserMenu } from "./components/UserMenu";
 import type { PrincipalSnapshot, Distribution } from "@/lib/types";
 import { Landmark } from "lucide-react";
 
@@ -12,6 +13,11 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = await createClient();
+
+  // Get authenticated user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Get latest principal for the withdrawal button
   const { data: latestSnap } = await supabase
@@ -56,7 +62,10 @@ export default async function Home() {
             </p>
           </div>
         </div>
-        <SimulateWithdrawalButton currentPrincipal={currentPrincipal} />
+        <div className="flex items-center gap-3">
+          <SimulateWithdrawalButton currentPrincipal={currentPrincipal} />
+          <UserMenu email={user?.email ?? ""} />
+        </div>
       </header>
 
       {/* KPI Cards */}
