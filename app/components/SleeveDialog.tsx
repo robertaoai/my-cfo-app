@@ -101,8 +101,8 @@ function SleeveFormDialog({
                   </option>
                 ))}
                 {/* Always allow the existing sleeve name just in case it's missing or deprecated */}
-                {sleeve && !availableTickers.find((t) => t.ticker === sleeve.name) && (
-                  <option value={sleeve.name}>{sleeve.name} (Legacy)</option>
+                {sleeve && !availableTickers.find((t) => t.ticker === sleeve.name && t.ticker === sleeve.ticker) && (
+                  <option value="" disabled>{sleeve.name} (Legacy - Please Update)</option>
                 )}
               </select>
             </div>

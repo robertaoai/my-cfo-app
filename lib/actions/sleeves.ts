@@ -79,6 +79,9 @@ export async function updateSleeve(formData: FormData) {
     : null;
 
   if (!id) return { error: "Sleeve ID is required." };
+  if (!name || !role || !entryPrice || !positionSize || !allocationPct) {
+    return { error: "Please select a valid Ticker and fill all required fields." };
+  }
 
   const supabase = await createClient();
 
