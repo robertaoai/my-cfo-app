@@ -8,9 +8,11 @@ import { Plus, Pencil, Loader2 } from "lucide-react";
 export function SleeveActions({
   mode,
   sleeve,
+  availableTickers,
 }: {
   mode: "create" | "edit";
   sleeve?: Sleeve;
+  availableTickers: { ticker: string; name: string }[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -24,7 +26,7 @@ export function SleeveActions({
           <Plus className="h-3.5 w-3.5" />
           Add Sleeve
         </button>
-        {open && <SleeveFormDialog onClose={() => setOpen(false)} />}
+        {open && <SleeveFormDialog onClose={() => setOpen(false)} availableTickers={availableTickers} />}
       </>
     );
   }
@@ -39,7 +41,7 @@ export function SleeveActions({
         <Pencil className="h-3 w-3" />
       </button>
       {open && (
-        <SleeveFormDialog sleeve={sleeve} onClose={() => setOpen(false)} />
+        <SleeveFormDialog sleeve={sleeve} onClose={() => setOpen(false)} availableTickers={availableTickers} />
       )}
     </>
   );
@@ -48,9 +50,11 @@ export function SleeveActions({
 function SleeveFormDialog({
   sleeve,
   onClose,
+  availableTickers,
 }: {
   sleeve?: Sleeve;
   onClose: () => void;
+  availableTickers: { ticker: string; name: string }[];
 }) {
   const isEdit = !!sleeve;
   const [isPending, startTransition] = useTransition();
@@ -82,16 +86,25 @@ function SleeveFormDialog({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-neutral-400 mb-1">
-                Name
+                Name (Ticker)
               </label>
-              <input
-                type="text"
+              <select
                 name="name"
                 defaultValue={sleeve?.name ?? ""}
                 required
-                placeholder="e.g. ARMW"
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-              />
+              >
+                <option value="" disabled>Select a ticker</option>
+                {availableTickers.map((t) => (
+                  <option key={t.ticker} value={t.ticker}>
+                    {t.ticker} ({t.name})
+                  </option>
+                ))}
+                {/* Always allow the existing sleeve name just in case it's missing or deprecated */}
+                {sleeve && !availableTickers.find((t) => t.ticker === sleeve.name) && (
+                  <option value={sleeve.name}>{sleeve.name} (Legacy)</option>
+                )}
+              </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-neutral-400 mb-1">

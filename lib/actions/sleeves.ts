@@ -35,6 +35,7 @@ export async function createSleeve(formData: FormData) {
     .from("sleeves")
     .insert({
       name,
+      ticker: name,
       role,
       entry_price: entryPrice,
       position_size: positionSize,
@@ -89,6 +90,7 @@ export async function updateSleeve(formData: FormData) {
     .from("sleeves")
     .update({
       name,
+      ticker: name,
       role,
       entry_price: entryPrice,
       position_size: positionSize,
@@ -198,6 +200,53 @@ export async function deleteSleeve(formData: FormData) {
 
   await writeAuditLog("sleeve_deleted", "sleeves", id, {
     name: sleeve?.name,
+  });
+
+  revalidatePath("/");
+  return { success: true };
+}
+
+/**
+ * Handle corporate actions (ticker deprecation/migration) without losing historical data.
+ */
+export async function migrateSleeveTicker(sleeveId: string, newTicker: string) {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+
+  // Validate that newTicker exists and is active in market_data
+  const { data: md, error: mdError } = await supabase
+    .from("market_data")
+    .select("status, name")
+    .eq("ticker", newTicker)
+    .single();
+
+  if (mdError || !md) {
+    return { error: "Target ticker does not exist in the market data universe." };
+  }
+  if (md.status !== "active") {
+    return { error: "Target ticker is not marked as active in market_data." };
+  }
+
+  // Update sleeve
+  const { error } = await supabase
+    .from("sleeves")
+    .update({ 
+      name: newTicker, 
+      ticker: newTicker,
+      status: "active"
+    })
+    .eq("id", sleeveId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: "Failed to migrate sleeve ticker" };
+  }
+
+  await writeAuditLog("sleeve_updated", "sleeves", sleeveId, {
+    action_type: "ticker_migration",
+    new_ticker: newTicker,
   });
 
   revalidatePath("/");

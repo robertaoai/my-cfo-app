@@ -8,11 +8,28 @@ import { PrincipalChart, CumulativeCashChart } from "./components/HistoryCharts"
 import { UserMenu } from "./components/UserMenu";
 import type { PrincipalSnapshot, Distribution } from "@/lib/types";
 import { Landmark } from "lucide-react";
+import fs from "fs";
+import path from "path";
+import { ExportButton } from "./components/ExportButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = await createClient();
+
+  // Read build-stamp
+  let stampStatus = "none";
+  let stampTime = null;
+  try {
+    const stampPath = path.join(process.cwd(), "public", "build-stamp.json");
+    if (fs.existsSync(stampPath)) {
+      const stamp = JSON.parse(fs.readFileSync(stampPath, "utf-8"));
+      stampStatus = stamp.status;
+      stampTime = stamp.timestamp;
+    }
+  } catch (e) {
+    // Ignore
+  }
 
   // Get authenticated user
   const {
@@ -52,11 +69,21 @@ export default async function Home() {
       {/* Header */}
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center">
+          <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center relative">
             <Landmark className="h-5 w-5 text-white" />
+            <span 
+              className={`absolute -bottom-1 -right-1 block h-3 w-3 rounded-full ring-2 ring-[#111111] ${
+                stampStatus === 'success' ? 'bg-emerald-500' : 
+                stampStatus === 'failed' ? 'bg-rose-500' : 
+                stampStatus === 'fallback_mock' ? 'bg-amber-500' : 'bg-neutral-500'
+              }`}
+              title={`Sync: ${stampStatus} ${stampTime ? `(${new Date(stampTime).toLocaleTimeString()})` : ''}`}
+            />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-white">My CFO</h1>
+            <h1 className="text-xl font-bold text-white flex items-center gap-2">
+              My CFO
+            </h1>
             <p className="text-xs text-neutral-500">
               Income-First Engine • SGD 6,094.91/mo target
             </p>
@@ -109,9 +136,12 @@ export default async function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Distributions */}
         <section>
-          <h2 className="text-sm font-medium text-neutral-300 uppercase tracking-wider mb-3">
-            Recent Distributions
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium text-neutral-300 uppercase tracking-wider">
+              Recent Distributions
+            </h2>
+            <ExportButton data={recentDists ?? []} filename="distributions" />
+          </div>
           <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
             {recentDists && recentDists.length > 0 ? (
               <div className="divide-y divide-white/5">
@@ -158,9 +188,11 @@ export default async function Home() {
 
         {/* Audit Log */}
         <section>
-          <h2 className="text-sm font-medium text-neutral-300 uppercase tracking-wider mb-3">
-            Audit Log
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium text-neutral-300 uppercase tracking-wider">
+              Audit Log
+            </h2>
+          </div>
           <RecentActivity />
         </section>
       </div>

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { AuditLog } from "@/lib/types";
 import { Clock, ArrowUpRight, ArrowDownLeft, FileText } from "lucide-react";
+import { ExportButton } from "./ExportButton";
 
 const actionIcons: Record<string, typeof ArrowUpRight> = {
   distribution_logged: ArrowUpRight,
@@ -62,17 +63,18 @@ export async function RecentActivity() {
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
-      <div className="px-4 py-3 border-b border-white/10">
+      <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
         <h3 className="text-sm font-medium text-neutral-300 flex items-center gap-2">
           <Clock className="h-4 w-4 text-neutral-500" />
           Recent Activity
         </h3>
+        <ExportButton data={logs} filename="audit_log" />
       </div>
       <div className="divide-y divide-white/5 max-h-80 overflow-y-auto">
         {logs.map((log) => {
           const Icon = actionIcons[log.action] ?? FileText;
           const color = actionColors[log.action] ?? "text-neutral-400";
-          const meta = log.metadata as Record<string, unknown> | null;
+          const meta = log.metadata as any;
 
           return (
             <div

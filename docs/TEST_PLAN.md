@@ -27,3 +27,10 @@
 ## Permission Test (Sprint 3)
 1. User A logs distribution → User B cannot see User A's data after RLS lock-down
 2. Unauthenticated user redirected to /login (except public demo view)
+
+## Sprint 4: Automation & Data Export
+1. **Pre-Build Sync:** Run `npm run sync:moomoo` — verify OpenD connection or mock fallback output is written to `public/build-stamp.json`.
+2. **Build-Stamp Indicator:** Verify dashboard header shows 🟢 (success), 🔴 (failed), or 🟡 (mocked) matching the stamp JSON.
+3. **Sleeve Dropdown:** Open 'Add Sleeve' dialog — verify ticker input is a dropdown populated from `market_data` instead of free text.
+4. **CSV Export:** Click "Export CSV" on Distributions and Audit Log — verify native browser download triggers and CSV is correctly formatted.
+5. **Deprecation Warning:** Manually set a ticker `status = 'deprecated'` with a `superseded_by` in Supabase — verify amber warning banner appears in the table. Click "Migrate" and verify sleeve updates to new ticker without data loss.

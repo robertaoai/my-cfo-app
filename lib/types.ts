@@ -19,11 +19,15 @@ export interface Sleeve {
   decay_trigger: DecayTrigger;
   last_ex_date: string | null;
   created_at: string;
+  market_data?: {
+    status: string;
+    superseded_by?: string | null;
+  };
 }
 
 export interface Distribution {
   id: string;
-  user_id: string | null;
+  user_id: string;
   sleeve_id: string;
   ex_date: string;
   gross: number;

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { Fragment } from "react";
 import type { Sleeve } from "@/lib/types";
 import { LogDistributionButton } from "./LogDistributionDialog";
 import { UpdatePriceButton } from "./UpdatePriceDialog";
@@ -27,17 +28,23 @@ export async function SleevesTable() {
 
   const { data } = await supabase
     .from("sleeves")
-    .select("*")
+    .select("*, market_data(status, superseded_by)")
     .order("role", { ascending: true })
     .order("created_at", { ascending: true });
 
   const sleeves = (data ?? []) as Sleeve[];
 
+  const { data: mdData } = await supabase
+    .from("market_data")
+    .select("ticker, name")
+    .eq("status", "active");
+  const availableTickers = (mdData ?? []) as { ticker: string; name: string }[];
+
   if (sleeves.length === 0) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/[0.02] p-8 text-center">
         <p className="text-neutral-400 text-sm">No sleeves yet.</p>
-        <SleeveActions mode="create" />
+        <SleeveActions mode="create" availableTickers={availableTickers} />
       </div>
     );
   }
@@ -88,8 +95,8 @@ export async function SleevesTable() {
                   : "text-neutral-300";
 
               return (
+                <Fragment key={s.id}>
                 <tr
-                  key={s.id}
                   className="border-b border-white/5 hover:bg-white/[0.03] transition-colors"
                 >
                   <td className="px-4 py-3">
@@ -148,17 +155,44 @@ export async function SleevesTable() {
                         </>
                       )}
                       <ReplacementButton sleeve={s} />
-                      <SleeveActions mode="edit" sleeve={s} />
+                      <SleeveActions mode="edit" sleeve={s} availableTickers={availableTickers} />
                     </div>
                   </td>
                 </tr>
+                {/* Deprecation Warning Row */}
+                {s.market_data && s.market_data.status === 'deprecated' && (
+                  <tr key={`warn-${s.id}`} className="bg-amber-500/10 border-b border-white/5">
+                    <td colSpan={8} className="px-4 py-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-amber-400">
+                          ⚠️ The ticker <strong>{s.name}</strong> has been deprecated by the exchange.
+                          {s.market_data?.superseded_by && ` It is superseded by ${s.market_data.superseded_by}.`}
+                        </p>
+                        <form action={async () => {
+                          "use server";
+                          const { migrateSleeveTicker } = await import("@/lib/actions/sleeves");
+                          if (s.market_data?.superseded_by) {
+                            await migrateSleeveTicker(s.id, s.market_data.superseded_by);
+                          }
+                        }}>
+                          {s.market_data?.superseded_by && (
+                            <button type="submit" className="text-xs font-medium text-amber-300 hover:text-amber-200 underline">
+                              Migrate to {s.market_data.superseded_by} Now
+                            </button>
+                          )}
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
               );
             })}
           </tbody>
         </table>
       </div>
       <div className="px-4 py-3 border-t border-white/5">
-        <SleeveActions mode="create" />
+        <SleeveActions mode="create" availableTickers={availableTickers} />
       </div>
     </div>
   );

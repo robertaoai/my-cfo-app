@@ -15,17 +15,17 @@ Self / business owner acting as their own CFO. Replaces weekly manual spreadshee
 - **Audit Logs** — timestamped action log for every meaningful event.
 
 ## MVP (v1) Checklist
-- [ ] Sleeve CRUD with entry/allocation/support/resistance fields
-- [ ] Distribution logging (ex-date, gross, withholding, net) per sleeve
-- [ ] Monthly withdrawal simulation on 1st
-- [ ] Principal balance auto-updates from distributions + withdrawals
-- [ ] Dashboard: monthly cash received, cumulative extracted, principal, active sleeves, warning flags
-- [ ] Three warning signals: projected income <90% target; weekly drawdown >15%; monthly withdrawal >10% remaining balance
-- [ ] Audit log for all writes
-- [ ] Seeded demo data (build-up window + first distributions)
+- [x] Sleeve CRUD with entry/allocation/support/resistance fields
+- [x] Distribution logging (ex-date, gross, withholding, net) per sleeve
+- [x] Monthly withdrawal simulation on 1st
+- [x] Principal balance auto-updates from distributions + withdrawals
+- [x] Dashboard: monthly cash received, cumulative extracted, principal, active sleeves, warning flags
+- [x] Three warning signals: projected income <90% target; weekly drawdown >15%; monthly withdrawal >10% remaining balance
+- [x] Audit log for all writes
+- [x] Seeded demo data (build-up window + first distributions)
 
 ## Non-Goals (v1)
-No live trading, leverage, exotic instruments, tax optimization, daily rebalancing, AI recommendations, multi-user access, real brokerage API.
+No live trading execution, leverage, exotic instruments, tax optimization, daily rebalancing, AI recommendations (planned for v2), multi-user access (currently isolated solo-user).
 
 ## Success Criteria
 Robert opens the dashboard, sees seeded SGD 330k principal with ARMW active, logs a weekly distribution of SGD 1,200 gross (SGD 840 net), sees principal update to SGD 330,840, triggers the monthly withdrawal of SGD 6,094.91, and the warning panel shows green or a flagged threshold — all timestamped in the audit log.

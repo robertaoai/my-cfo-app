@@ -1,11 +1,23 @@
 # Data Model
 
+## market_data
+| Field | Type | Notes |
+|---|---|---|
+| ticker | text pk | e.g. 'US.ARMW' |
+| name | text | Human readable e.g. 'ARMW' |
+| current_price | numeric | Synced from OpenD |
+| status | text | 'active', 'deprecated', 'delisted' |
+| superseded_by | text | self-referential fk to ticker |
+| last_synced | timestamptz | |
+| user_id | uuid | owner-scoping |
+
 ## sleeves
 | Field | Type | Notes |
 |---|---|---|
 | id | uuid pk | |
-| user_id | uuid nullable | owner-scoping later |
-| name | text | ARMW or AMDW |
+| user_id | uuid | owner-scoping |
+| name | text | e.g. 'ARMW' |
+| ticker | text | fk to market_data.ticker |
 | role | text | 'primary' or 'secondary' |
 | status | text | 'active', 'flagged', 'replaced', 'closed' |
 | entry_price | numeric | |
@@ -76,11 +88,12 @@
 
 ## Relationships
 - distributions.sleeve_id → sleeves.id (many-to-one)
-- All tables have nullable user_id for later RLS owner-scoping
+- sleeves.ticker → market_data.ticker (many-to-one)
+- All tables have `user_id` for RLS owner-scoping.
 
 ## RLS Notes
-- v1: permissive read/write policies (demo-first, no login wall)
-- Later: `auth.uid() = user_id` on all tables
+- **User Isolation:** `auth.uid() = user_id` enforced on all tables.
+- **Service Role:** The pre-build sync script (`sync_moomoo.ts`) uses the service-role key to bypass RLS when fetching prices and updating the `market_data` table.
 
 ## AI Fields
 No AI-generated fields in v1. All values are user-entered or deterministically computed.
