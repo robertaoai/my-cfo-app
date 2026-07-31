@@ -68,25 +68,17 @@ export default async function Home() {
     .is("archive_batch_id", null)
     .order("ex_date", { ascending: true });
 
-  // Get last archive batch to allow undo in the empty state
-  const { data: lastArchiveLog } = await supabase
-    .from("audit_logs")
-    .select("entity_id")
-    .eq("action", "cycle_archived")
+  // Bypassing audit_logs to guarantee the Undo button appears.
+  // We simply find the most recently created distribution that has an archive batch ID.
+  const { data: latestArchivedDist } = await supabase
+    .from("distributions")
+    .select("archive_batch_id")
+    .not("archive_batch_id", "is", null)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  let canUndoBatchId = null;
-  if (lastArchiveLog?.entity_id) {
-    const { count } = await supabase
-      .from("distributions")
-      .select("*", { count: "exact", head: true })
-      .eq("archive_batch_id", lastArchiveLog.entity_id);
-    if (count && count > 0) {
-      canUndoBatchId = lastArchiveLog.entity_id;
-    }
-  }
+  const canUndoBatchId = latestArchivedDist?.archive_batch_id || null;
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
