@@ -33,6 +33,7 @@ export interface Distribution {
   gross: number;
   withholding: number; // DB generated: gross × 0.30
   net: number; // DB generated: gross − withholding
+  archive_batch_id: string | null;
   created_at: string;
 }
 

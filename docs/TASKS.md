@@ -72,10 +72,10 @@
 ### Phase 6: Documentation Update ✅
 - [x] Update SECURITY.md, DATA_MODEL.md, ARCHITECTURE.md, PRD.md, TEST_PLAN.md
 
-## Sprint 4.1 — Gap Closures & Polish 🚧 IN PROGRESS
+## Sprint 4.1 — Gap Closures & Polish ✅ COMPLETE
 **Goal:** Address bugs and missing data fields discovered during final Sprint 4 verification.
-- [ ] UI Gap: Recent Distributions list is missing the stock symbols (tickers) next to the sleeve names.
-- [ ] UI Gap: Ensure any other historical data views display full ticker information where appropriate.
+- [x] UI Gap: Recent Distributions list is missing the stock symbols (tickers) next to the sleeve names.
+- [x] UI Gap: Ensure any other historical data views display full ticker information where appropriate.
 
 ## Sprint 5 — Intelligence (WebLLM) 📋 PLANNED
 **Goal:** In-browser AI capabilities.
@@ -88,5 +88,5 @@ Sprint 1:   [xxxx] Core engine + dashboard        ✅
 Sprint 2:        [xxxx] Replacement + history      ✅
 Sprint 3:            [xxxx] Lock down              ✅
 Sprint 4:                [xxxx] Automation & Export ✅
-Sprint 4.1:                   [x   ] Gap Closures   🚧
+Sprint 4.1:                   [xxxx] Gap Closures   ✅
 Sprint 5:                          [    ] Intelligence   📋

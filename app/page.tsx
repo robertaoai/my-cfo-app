@@ -4,6 +4,7 @@ import { WarningPanel } from "./components/WarningPanel";
 import { SleevesTable } from "./components/SleevesTable";
 import { RecentActivity } from "./components/RecentActivity";
 import { SimulateWithdrawalButton } from "./components/SimulateWithdrawalDialog";
+import { ArchiveCycleButton } from "./components/ArchiveCycleButton";
 import { PrincipalChart, CumulativeCashChart } from "./components/HistoryCharts";
 import { UserMenu } from "./components/UserMenu";
 import type { PrincipalSnapshot, Distribution } from "@/lib/types";
@@ -49,6 +50,7 @@ export default async function Home() {
   const { data: recentDists } = await supabase
     .from("distributions")
     .select("id, ex_date, gross, withholding, net, sleeve_id, sleeves(name, ticker)")
+    .is("archive_batch_id", null)
     .order("ex_date", { ascending: false })
     .limit(8);
 
@@ -62,6 +64,7 @@ export default async function Home() {
   const { data: allDists } = await supabase
     .from("distributions")
     .select("*")
+    .is("archive_batch_id", null)
     .order("ex_date", { ascending: true });
 
   return (
@@ -90,6 +93,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <ArchiveCycleButton />
           <SimulateWithdrawalButton currentPrincipal={currentPrincipal} />
           <UserMenu email={user?.email ?? ""} />
         </div>
