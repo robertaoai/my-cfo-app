@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "op run --env-file=.env.op -- next dev --turbopack || next dev --turbopack",
     "sync:moomoo": "op run --env-file=.env.op -- npx tsx scripts/sync_moomoo.ts || echo 'op missing, sync skipped'",
-    "prebuild": "npm run sync:moomoo || echo 'Sync skipped'",
-    "build": "op run --env-file=.env.op -- next build || next build",
+    "build:local": "npm run sync:moomoo && op run --env-file=.env.op -- next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
@@ -21,6 +21,7 @@
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.6.0",
     "recharts": "^3.10.1",
     "ws": "^8.21.1"
   },
