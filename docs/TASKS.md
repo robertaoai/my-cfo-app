@@ -41,36 +41,41 @@
 
 ## Sprint 4 — Automation & Data Export ✅ COMPLETE
 **Goal:** Secure local dev, Moomoo API automation, ticker management, CSV export.
-### Phase 0: First-Time Setup
+### Phase 0: First-Time Setup ✅
 - [x] Install & configure 1Password CLI
 - [x] Store all 4 keys in 1Password vault
 - [x] Create `.env.op` template, remove `.env.local`
 - [x] Install & configure Moomoo OpenD
 - [x] Verify with `test_moomoo.ts`
-### Phase 1: Database Migration
+### Phase 1: Database Migration ✅
 - [x] Create `market_data` table with ticker lifecycle columns
 - [x] Add `ticker` column to `sleeves` table
-### Phase 2: Pre-Build Sync Script
+### Phase 2: Pre-Build Sync Script ✅
 - [x] Write `scripts/sync_moomoo.ts` to hit OpenD API
 - [x] Upsert into `market_data` and update `sleeves.current_price`
 - [x] Output `build-stamp.json` 
 - [x] Add `prebuild` hook to `package.json`
-### Phase 3: Dashboard UI Updates
+### Phase 3: Dashboard UI Updates ✅
 - [x] Create `build-stamp.default.json` fallback
 - [x] Add `public/build-stamp.json` to `.gitignore`
 - [x] Parse stamp in `app/page.tsx` and render 🟢/🔴/⚪ indicator in Header
 - [x] Fetch active `market_data` tickers
 - [x] Refactor Sleeve Creation/Edit dialogs to use Dropdown instead of input
-### Phase 4: Frontend CSV Export
+### Phase 4: Frontend CSV Export ✅
 - [x] Create generic `<ExportButton>` using zero-dependency Blob APIs
 - [x] Inject `<ExportButton>` into Distributions header
 - [x] Inject `<ExportButton>` into Audit Log header
-### Phase 5: Deprecation Notice & Ticker Migration
+### Phase 5: Deprecation Notice & Ticker Migration ✅
 - [x] Add `migrateSleeveTicker(id, newTicker)` to Server Actions
 - [x] Add `deprecated` visual warning banner in `app/page.tsx` mapping
-- [x] Add migration flow to deprecation banner` Server Action
-### Phase 6: Documentation Update
+- [x] Add migration flow to deprecation banner Server Action
+### Phase 6: Documentation Update ✅
 - [x] Update SECURITY.md, DATA_MODEL.md, ARCHITECTURE.md, PRD.md, TEST_PLAN.md
+
+## Sprint 4.1 — Gap Closures & Polish 🚧 IN PROGRESS
+**Goal:** Address bugs and missing data fields discovered during final Sprint 4 verification.
+- [ ] UI Gap: Recent Distributions list is missing the stock symbols (tickers) next to the sleeve names.
+- [ ] UI Gap: Ensure any other historical data views display full ticker information where appropriate.
 
 ## Sprint 5 — Intelligence (WebLLM) 📋 PLANNED
 **Goal:** In-browser AI capabilities.
@@ -79,8 +84,9 @@
 - [ ] Auto-suggested replacement candidates ranked by yield + risk
 
 ## Gantt
-Sprint 1: [xxxx] Core engine + dashboard        ✅
-Sprint 2:      [xxxx] Replacement + history      ✅
-Sprint 3:          [xxxx] Lock down              ✅
-Sprint 4:              [xxxx] Automation & Export ✅
-Sprint 5:                   [    ] Intelligence   📋
+Sprint 1:   [xxxx] Core engine + dashboard        ✅
+Sprint 2:        [xxxx] Replacement + history      ✅
+Sprint 3:            [xxxx] Lock down              ✅
+Sprint 4:                [xxxx] Automation & Export ✅
+Sprint 4.1:                   [x   ] Gap Closures   🚧
+Sprint 5:                          [    ] Intelligence   📋

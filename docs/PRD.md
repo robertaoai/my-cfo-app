@@ -29,3 +29,8 @@ No live trading execution, leverage, exotic instruments, tax optimization, daily
 
 ## Success Criteria
 Robert opens the dashboard, sees seeded SGD 330k principal with ARMW active, logs a weekly distribution of SGD 1,200 gross (SGD 840 net), sees principal update to SGD 330,840, triggers the monthly withdrawal of SGD 6,094.91, and the warning panel shows green or a flagged threshold — all timestamped in the audit log.
+
+## Operating Model (Odysseus x GStack)
+This project is governed by a strict two-tier development operating model:
+- **[Odysseus Sandbox](odysseus/README.md)**: An isolated workspace (`docs/odysseus/`) for unstructured financial ideation and UI exploration.
+- **[GStack Factory](GSTACK_PROCESS.md)**: A structured engineering protocol (`docs/GSTACK_PROCESS.md`) using strict slash-commands to promote and validate features into production. All actionable tasks are strictly managed within `docs/TASKS.md`.

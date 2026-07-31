@@ -48,7 +48,7 @@ export default async function Home() {
   // Get recent distributions for the quick summary
   const { data: recentDists } = await supabase
     .from("distributions")
-    .select("id, ex_date, gross, withholding, net, sleeve_id, sleeves(name)")
+    .select("id, ex_date, gross, withholding, net, sleeve_id, sleeves(name, ticker)")
     .order("ex_date", { ascending: false })
     .limit(8);
 
@@ -146,7 +146,7 @@ export default async function Home() {
             {recentDists && recentDists.length > 0 ? (
               <div className="divide-y divide-white/5">
                 {recentDists.map((d) => {
-                  const sleeve = d.sleeves as unknown as { name: string } | null;
+                  const sleeve = d.sleeves as unknown as { name: string, ticker: string | null } | null;
                   return (
                     <div
                       key={d.id}
@@ -154,7 +154,7 @@ export default async function Home() {
                     >
                       <div>
                         <p className="text-sm text-white font-medium">
-                          {sleeve?.name ?? "Unknown"}
+                          {sleeve?.ticker ? `${sleeve.ticker} (${sleeve.name})` : (sleeve?.name ?? "Unknown")}
                         </p>
                         <p className="text-xs text-neutral-500">{d.ex_date}</p>
                       </div>
