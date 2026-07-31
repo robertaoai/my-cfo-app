@@ -21,33 +21,8 @@ export function ArchiveCycleButton() {
 
     if (error) {
       toast.error(error);
-    } else if (success && batchId) {
       router.refresh(); // Dynamically update dashboard
-      toast.success(
-        (t) => (
-          <div className="flex flex-col gap-2">
-            <span className="font-medium">Cycle Archived Successfully</span>
-            <span className="text-xs text-neutral-400">Dashboard has been reset to baseline.</span>
-            <button
-              onClick={async () => {
-                toast.dismiss(t.id);
-                const undoRes = await undoArchive(batchId);
-                if (undoRes.error) {
-                  toast.error(undoRes.error);
-                } else {
-                  router.refresh(); // Dynamically update dashboard
-                  toast.success("Archive undone.");
-                }
-              }}
-              className="mt-1 px-3 py-1.5 text-xs bg-neutral-800 hover:bg-neutral-700 text-white rounded transition-colors flex items-center justify-center gap-2"
-            >
-              <ArchiveRestore className="w-3 h-3" />
-              Undo Archive
-            </button>
-          </div>
-        ),
-        { duration: 10000 } // Keep open longer so user can undo
-      );
+      toast.success("Cycle Archived Successfully");
     }
   };
 

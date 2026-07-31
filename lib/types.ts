@@ -8,6 +8,7 @@ export interface Sleeve {
   id: string;
   user_id: string | null;
   name: string;
+  ticker: string | null;
   role: SleeveRole;
   status: SleeveStatus;
   entry_price: number;

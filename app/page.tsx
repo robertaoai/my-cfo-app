@@ -5,6 +5,7 @@ import { SleevesTable } from "./components/SleevesTable";
 import { RecentActivity } from "./components/RecentActivity";
 import { SimulateWithdrawalButton } from "./components/SimulateWithdrawalDialog";
 import { ArchiveCycleButton } from "./components/ArchiveCycleButton";
+import { UndoArchiveButton } from "./components/UndoArchiveButton";
 import { PrincipalChart, CumulativeCashChart } from "./components/HistoryCharts";
 import { UserMenu } from "./components/UserMenu";
 import type { PrincipalSnapshot, Distribution } from "@/lib/types";
@@ -66,6 +67,26 @@ export default async function Home() {
     .select("*")
     .is("archive_batch_id", null)
     .order("ex_date", { ascending: true });
+
+  // Get last archive batch to allow undo in the empty state
+  const { data: lastArchiveLog } = await supabase
+    .from("audit_logs")
+    .select("entity_id")
+    .eq("action", "cycle_archived")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  let canUndoBatchId = null;
+  if (lastArchiveLog?.entity_id) {
+    const { count } = await supabase
+      .from("distributions")
+      .select("*", { count: "exact", head: true })
+      .eq("archive_batch_id", lastArchiveLog.entity_id);
+    if (count && count > 0) {
+      canUndoBatchId = lastArchiveLog.entity_id;
+    }
+  }
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -181,10 +202,11 @@ export default async function Home() {
                 })}
               </div>
             ) : (
-              <div className="p-6 text-center">
+              <div className="p-6 text-center flex flex-col items-center gap-3">
                 <p className="text-sm text-neutral-400">
                   No distributions yet. Log your first via a sleeve above.
                 </p>
+                {canUndoBatchId && <UndoArchiveButton batchId={canUndoBatchId} />}
               </div>
             )}
           </div>

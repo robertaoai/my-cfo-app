@@ -1,6 +1,5 @@
 import net from 'net';
 import crypto from 'crypto';
-import type { FutuQuote } from '../types';
 
 const protoRoot = require('futu-api/proto.js');
 const ftWebsocketHeadSign = "ft-v1.0";
