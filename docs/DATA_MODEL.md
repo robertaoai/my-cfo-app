@@ -95,5 +95,32 @@
 - **User Isolation:** `auth.uid() = user_id` enforced on all tables.
 - **Service Role:** The pre-build sync script (`sync_moomoo.ts`) uses the service-role key to bypass RLS when fetching prices and updating the `market_data` table.
 
+## Minimal-Change Project-Cycle Compatibility Plan (Future)
+
+Migrations `0001` through `0006` and all existing records remain unchanged. Existing `principal_snapshots` retain their completed-sprint meaning and must not be deleted, rewritten, automatically reclassified, or collectively treated as protected project-cycle principals.
+
+A future forward-only migration may add one `project_cycles` table with:
+
+| Field | Purpose |
+|---|---|
+| id | Project-cycle identifier |
+| user_id | Owner scope |
+| baseline_snapshot_id | Existing principal snapshot explicitly adopted by the owner |
+| protected_principal | Authoritative owner-entered starting principal |
+| started_at / closed_at | Cycle lifetime |
+| status | Cycle state |
+| statement_deposit_total | Sum of statement deposits assigned to the cycle |
+| reconciliation_variance | Deposit total less protected principal |
+| reconciliation_status | Pending, confirmed, or adjusted state |
+| statement_reference | Source statement identifier |
+| reconciliation_metadata | Structured deposit and decision evidence |
+| created_at / updated_at | Record timestamps |
+
+Adoption is explicit: show candidate snapshots, let the owner select the baseline, create the cycle reference, preserve the snapshot unchanged, and write an audit record. Recency alone must never choose the baseline. Unselected snapshots remain historical.
+
+For the first reconciliation iteration, statement-deposit details may live in structured cycle metadata. Add a separate deposit-transactions table only when recurring ingestion, transaction matching, correction, or reporting requires it.
+
+`distributions.archive_batch_id` continues to identify distribution batches and must not become the project-cycle key. The database allocation constraint remains 0% through 100%; the 10% through 25% preferred sleeve range is advisory and non-blocking.
+
 ## AI Fields
 No AI-generated fields in v1. All values are user-entered or deterministically computed.

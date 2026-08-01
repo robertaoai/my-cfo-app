@@ -12,6 +12,30 @@
 9. Verify principal drops by withdrawal amount, withdrawal logged in audit, principal_after correct
 10. Verify warning panel reflects updated state after withdrawal
 
+## Future Acceptance Criteria: Project Cycles
+
+### Existing Principal Preservation
+1. An owner can explicitly select an existing principal snapshot as the protected principal baseline.
+2. The selected snapshot remains unchanged, and all other snapshots remain historical and unclassified.
+3. Cycle creation records the adoption in the audit log.
+
+### Statement Reconciliation
+1. Several statement deposits may be assigned to one project cycle and the system calculates their sum.
+2. The sum is compared with protected principal and any variance is shown without overwriting the original.
+3. Reconciliation and adjustments require owner confirmation and preserve before-and-after values, evidence, actor, and timestamp.
+
+### Distribution and Withdrawal Separation
+1. Archiving a distribution batch does not change protected principal or hide historical reporting.
+2. Distribution achievement and actual withdrawal extraction are reported separately.
+3. An actual withdrawal can be reconciled after its related distribution batch is archived.
+4. Simulated withdrawals do not contribute to cumulative extracted.
+
+### Allocation Advisory and Access
+1. Values from 0% through 100% remain valid and save successfully.
+2. Values below 10% or above 25% create a non-blocking warning identifying the sleeve.
+3. Production data remains behind Magic Link authentication with owner-scoped RLS.
+4. Any future public demo uses synthetic data and cannot access production owner records.
+
 ## Empty State Test
 1. Fresh database (no seed) — dashboard shows "No sleeves yet" with create button, principal SGD 0, all panels show empty-state copy, no crashes
 

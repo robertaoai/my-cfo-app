@@ -33,6 +33,20 @@
 5. **Rank:** Warning engine checks three thresholds; if any breached, warning row created and shown on dashboard
 6. **Act:** If monthly withdrawal date (1st) is reached, simulate withdrawal — deduct from principal, log to audit
 
+## Planned Project-Cycle Boundaries
+
+The future project-cycle model is additive and must not reinterpret the existing deterministic v1 ledger:
+
+1. An owner explicitly adopts an existing `principal_snapshots` row as a cycle baseline.
+2. The referenced snapshot remains unchanged; the cycle stores protected principal and reconciliation state separately.
+3. Statement deposits are assigned to the cycle and summed for reconciliation.
+4. A variance is surfaced for owner confirmation instead of changing principal automatically.
+5. Statement-confirmed actual withdrawals contribute to cumulative extracted; simulations and distributions remain separate measures.
+
+Project cycles and distribution archive batches have different lifetimes. `distributions.archive_batch_id` must not be reused as a project-cycle identifier. Archiving distributions does not change the cycle principal, and actual withdrawals may be reconciled after their related distribution batch is archived.
+
+Authenticated owner data remains protected by RLS. Any future public demo is a separate synthetic-data surface with no path to production owner records. Moomoo OpenD remains a local synchronization dependency; cloud UI must expose freshness rather than imply continuous connectivity.
+
 ## Layer Plan
 1. **Data:** Postgres tables with constraints (gross ≥ 0, withholding = gross × 0.30, net = gross − withholding)
 2. **App Logic:** Server-side functions for principal recalculation, warning detection, withdrawal execution

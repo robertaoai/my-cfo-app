@@ -6,6 +6,7 @@ import { RecentActivity } from "./components/RecentActivity";
 import { SimulateWithdrawalButton } from "./components/SimulateWithdrawalDialog";
 import { ArchiveCycleButton } from "./components/ArchiveCycleButton";
 import { UndoArchiveButton } from "./components/UndoArchiveButton";
+import { ImportPDFButton } from "./components/ImportPDFButton";
 import { PrincipalChart, CumulativeCashChart } from "./components/HistoryCharts";
 import { UserMenu } from "./components/UserMenu";
 import type { PrincipalSnapshot, Distribution } from "@/lib/types";
@@ -157,7 +158,10 @@ export default async function Home() {
             <h2 className="text-sm font-medium text-neutral-300 uppercase tracking-wider">
               Recent Distributions
             </h2>
-            <ExportButton data={recentDists ?? []} filename="distributions" />
+            <div className="flex gap-2">
+              <ImportPDFButton />
+              <ExportButton data={recentDists ?? []} filename="distributions" />
+            </div>
           </div>
           <div className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
             {recentDists && recentDists.length > 0 ? (
